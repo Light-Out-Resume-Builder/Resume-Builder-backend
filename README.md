@@ -51,7 +51,14 @@ pip install -r requirements.txt
 python manage.py runserver
 ```
 
- 
+## API Documentation
+[API Documentation](https://github.com/Light-Out-Resume-Builder/Resume-Builder-backend/blob/main/API.md)
+
+## Built With ❤️ using Django Rest Framework
+
+- [Django](https://www.djangoproject.com/) - The web framework used
+- [Django Rest Framework](https://www.django-rest-framework.org/) - The REST API framework used
+
 ## Author
 
 - **Jacob Isah** - [Enecode](https://github.com/Enecode/)
