@@ -1,8 +1,14 @@
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .serializers import UserRegistrationSerializer, LoginSerializer, LogoutSerializer
+from .serializers import UserRegistrationSerializer, LoginSerializer, LogoutSerializer, TemplateSerializer
 from django.contrib.auth import authenticate
+from rest_framework.views import APIView
+from rest_framework.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND, HTTP_400_BAD_REQUEST, HTTP_204_NO_CONTENT
+from rest_framework import permissions
+from .models import Template
+from .serializers import LoginSerializer, UserRegistrationSerializer
+
 
 class RegisterView(generics.GenericAPIView):
     serializer_class = UserRegistrationSerializer
@@ -16,10 +22,6 @@ class RegisterView(generics.GenericAPIView):
             "message": "User Created Successfully. Now perform Login to get your token",
         }, status=status.HTTP_201_CREATED)
 
-from rest_framework import generics, status
-from rest_framework.response import Response
-from django.contrib.auth import authenticate
-from .serializers import LoginSerializer, UserRegistrationSerializer
 
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
@@ -44,8 +46,57 @@ class LogoutView(generics.GenericAPIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
-        # Assuming the serializer's save method handles the logout logic
+        # the serializer's save method handles the logout logic
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({"status": "success"}, status=status.HTTP_200_OK)
+    
+
+class TemplateList(APIView):
+#   permission_classes = [permissions.IsAuthenticated]
+
+  def get(self, request):
+    templates = Template.objects.all()
+    serializer = TemplateSerializer(templates, many=True)
+    return Response(serializer.data)
+
+  def post(self, request):
+    serializer = TemplateSerializer(data=request.data)
+    if serializer.is_valid():
+      serializer.save()
+      return Response(serializer.data, status=HTTP_201_CREATED)
+    return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+class TemplateDetail(APIView):
+#   permission_classes = [permissions.IsAuthenticated]
+
+  def get_object(self, pk):
+    try:
+      return Template.objects.get(pk=pk)
+    except Template.DoesNotExist:
+      return None
+
+  def get(self, request, pk):
+    template = self.get_object(pk)
+    if not template:
+      return Response(status=HTTP_404_NOT_FOUND)
+    serializer = TemplateSerializer(template)
+    return Response(serializer.data)
+
+  def put(self, request, pk):
+    template = self.get_object(pk)
+    if not template:
+      return Response(status=HTTP_404_NOT_FOUND)
+    serializer = TemplateSerializer(template, data=request.data)
+    if serializer.is_valid():
+      serializer.save()
+      return Response(serializer.data)
+    return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+  def delete(self, request, pk):
+    template = self.get_object(pk)
+    if not template:
+      return Response(status=HTTP_404_NOT_FOUND)
+    template.delete()
+    return Response(status=HTTP_204_NO_CONTENT)

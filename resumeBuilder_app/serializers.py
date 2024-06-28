@@ -5,7 +5,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from django.contrib.auth import authenticate
 from rest_framework.exceptions import AuthenticationFailed
-
+from .models import Template
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, max_length=128, min_length=6)
@@ -26,8 +26,6 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             fullname=validated_data['fullname']
         )
         return user
-
-
 
 
 class LoginSerializer(serializers.Serializer):
@@ -73,3 +71,10 @@ class LogoutSerializer(serializers.Serializer):
             RefreshToken(self.token).blacklist()
         except TokenError:
             self.fail('bad_token')
+
+
+
+class TemplateSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Template
+    fields = '__all__'

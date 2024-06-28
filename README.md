@@ -51,10 +51,9 @@ pip install -r requirements.txt
 python manage.py runserver
 ```
 
-_________________________________________________________________________________________________________________________________________________________________
 ## API Documentation
 [API Documentation](https://github.com/Light-Out-Resume-Builder/Resume-Builder-backend/blob/main/API.md)
-_________________________________________________________________________________________________________________________________________________________________
+
 ## Built With ❤️ using Django Rest Framework
 
 - [Django](https://www.djangoproject.com/) - The web framework used

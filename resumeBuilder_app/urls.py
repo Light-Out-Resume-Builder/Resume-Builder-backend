@@ -1,5 +1,7 @@
 from . import views
 from django.urls import path
+from django.urls import path
+from .views import TemplateList, TemplateDetail
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
@@ -22,7 +24,11 @@ schema_view = get_schema_view(
     permission_classes=(permissions.AllowAny,),
 )
 
+
 urlpatterns = [
+    path('templates/', TemplateList.as_view()),
+    path('templates/<int:pk>/', TemplateDetail.as_view()),
+
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
     
