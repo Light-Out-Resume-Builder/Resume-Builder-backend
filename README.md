@@ -51,12 +51,7 @@ pip install -r requirements.txt
 python manage.py runserver
 ```
 
-
-## Built With ❤️ using Django Rest Framework
-
-- [Django](https://www.djangoproject.com/) - The web framework used
-- [Django Rest Framework](https://www.django-rest-framework.org/) - The REST API framework used
-
+ 
 ## Author
 
 - **Jacob Isah** - [Enecode](https://github.com/Enecode/)
