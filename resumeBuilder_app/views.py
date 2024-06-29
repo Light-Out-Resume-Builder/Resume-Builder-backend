@@ -46,7 +46,6 @@ class LogoutView(generics.GenericAPIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
-        # the serializer's save method handles the logout logic
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
