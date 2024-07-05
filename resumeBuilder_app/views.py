@@ -1,13 +1,14 @@
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .serializers import UserRegistrationSerializer, LoginSerializer, LogoutSerializer, TemplateSerializer
+from .serializers import UserRegistrationSerializer, ResumeSerializer, LoginSerializer, LogoutSerializer, TemplateSerializer
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from rest_framework.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND, HTTP_400_BAD_REQUEST, HTTP_204_NO_CONTENT
 from rest_framework import permissions
-from .models import Template
-from .serializers import LoginSerializer, UserRegistrationSerializer
+from .models import Template, Resume
+from rest_framework import viewsets
+
 
 
 class RegisterView(generics.GenericAPIView):
@@ -99,3 +100,19 @@ class TemplateDetail(APIView):
       return Response(status=HTTP_404_NOT_FOUND)
     template.delete()
     return Response(status=HTTP_204_NO_CONTENT)
+
+class TemplateDownloadView(APIView):
+  def get(self, request, pk):
+    template = self.get_object(pk)
+    if not template:
+      return Response(status=HTTP_404_NOT_FOUND)
+    serializer = TemplateSerializer(template)
+    return Response(serializer.data)
+  
+class TemplatePreviewView(viewsets.ModelViewSet):
+    queryset = Template.objects.all()
+    serializer_class = TemplateSerializer
+
+class ResumeViewSet(viewsets.ModelViewSet):
+    queryset = Resume.objects.all()
+    serializer_class = ResumeSerializer
