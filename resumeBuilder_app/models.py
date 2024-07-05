@@ -44,14 +44,12 @@ class Resume(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='resumes')
     template = models.ForeignKey(Template, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     job_title = models.CharField(max_length=100)
     address = models.CharField(max_length=255)
     email = models.EmailField()
     phone_number = models.CharField(max_length=20)
-
     summary = models.TextField(blank=True, null=True)
 
     def __str__(self):
