@@ -35,7 +35,7 @@ class Template(models.Model):
     ]
 
     template_type = models.CharField(max_length=50, choices=TEMPLATE_CHOICES)
-    is_cover_letter = models.BooleanField(default=False)  # False for Resume, True for Cover Letter
+    is_cover_letter = models.BooleanField(default=False) 
 
     def __str__(self):
         return f"{self.get_template_type_display()} ({'Cover Letter' if self.is_cover_letter else 'Resume'})"
