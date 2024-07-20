@@ -31,7 +31,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [*]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -39,7 +39,7 @@ ALLOWED_HOSTS = [*]
 INSTALLED_APPS = [
     'resumeBuilder_app',
     'rest_framework',
-    'drf_yasg',
+    # 'drf_yasg',
     'corsheaders',
     'rest_framework_simplejwt.token_blacklist',
     'django.contrib.admin',
