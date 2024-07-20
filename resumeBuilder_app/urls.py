@@ -1,6 +1,5 @@
 from . import views
 from django.urls import path
-from django.urls import path
 from .views import TemplateList, TemplateDetail
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
@@ -28,6 +27,15 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('templates/', TemplateList.as_view()),
     path('templates/<int:pk>/', TemplateDetail.as_view()),
+    # path('templates/<int:pk>/download/', views.TemplateDownloadView.as_view()),
+    # path('templates/<int:pk>/preview/', views.TemplatePreviewView.as_view()),
+
+    path('resume/', views.ResumeViewSet.as_view({
+        'get': 'list',
+        'post': 'create',
+        'delete': 'destroy',
+        'put': 'update',
+    })),
 
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
@@ -36,4 +44,5 @@ urlpatterns = [
     path('login/',views.LoginView.as_view(),name="login"),
     path('logout/', views.LogoutView.as_view(), name="logout"),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+
 ]

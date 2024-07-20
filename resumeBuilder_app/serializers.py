@@ -5,7 +5,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from django.contrib.auth import authenticate
 from rest_framework.exceptions import AuthenticationFailed
-from .models import Template
+from .models import Template, Resume
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, max_length=128, min_length=6)
@@ -78,3 +78,9 @@ class TemplateSerializer(serializers.ModelSerializer):
   class Meta:
     model = Template
     fields = '__all__'
+
+
+class ResumeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Resume
+        fields = '__all__'

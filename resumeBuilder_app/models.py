@@ -35,7 +35,7 @@ class Template(models.Model):
     ]
 
     template_type = models.CharField(max_length=50, choices=TEMPLATE_CHOICES)
-    is_cover_letter = models.BooleanField(default=False)  # False for Resume, True for Cover Letter
+    is_cover_letter = models.BooleanField(default=False) 
 
     def __str__(self):
         return f"{self.get_template_type_display()} ({'Cover Letter' if self.is_cover_letter else 'Resume'})"
@@ -44,15 +44,12 @@ class Resume(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='resumes')
     template = models.ForeignKey(Template, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-
-    # Contact Info
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     job_title = models.CharField(max_length=100)
     address = models.CharField(max_length=255)
     email = models.EmailField()
     phone_number = models.CharField(max_length=20)
-
     summary = models.TextField(blank=True, null=True)
 
     def __str__(self):
