@@ -77,10 +77,11 @@ class LogoutSerializer(serializers.Serializer):
 class TemplateSerializer(serializers.ModelSerializer):
   class Meta:
     model = Template
-    fields = '__all__'
+    fields = ['id', 'template_type', 'is_cover_letter']
 
 
 class ResumeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Resume
-        fields = '__all__'
+        fields = ['id','user', 'template', 'created_at', 'first_name', 'last_name', 'job_title', 'address', 'email', 'phone_number', 'summary']
+
