@@ -113,6 +113,13 @@ class TemplatePreviewView(viewsets.ModelViewSet):
     queryset = Template.objects.all()
     serializer_class = TemplateSerializer
 
+
 class ResumeViewSet(viewsets.ModelViewSet):
     queryset = Resume.objects.all()
     serializer_class = ResumeSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Filter the queryset to only include resumes belonging to the authenticated user
+        return self.queryset.filter(user=self.request.user)
+
