@@ -3,9 +3,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .serializers import UserRegistrationSerializer, ResumeSerializer, LoginSerializer, LogoutSerializer, TemplateSerializer
 from django.contrib.auth import authenticate
-from rest_framework.views import APIView
-from rest_framework.status import HTTP_201_CREATED, HTTP_404_NOT_FOUND, HTTP_400_BAD_REQUEST, HTTP_204_NO_CONTENT
-from rest_framework import permissions
 from .models import Template, Resume
 from rest_framework import viewsets
 
@@ -20,7 +17,7 @@ class RegisterView(generics.GenericAPIView):
         user = serializer.save()
         return Response({
             "user": UserRegistrationSerializer(user, context=self.get_serializer_context()).data,
-            "message": "User Created Successfully. Now perform Login to get your token",
+            "message": "User Created Successfully. Continue to Login...",
         }, status=status.HTTP_201_CREATED)
 
 
@@ -52,66 +49,14 @@ class LogoutView(generics.GenericAPIView):
         serializer.save()
         return Response({"status": "success"}, status=status.HTTP_200_OK)
     
-
-class TemplateList(APIView):
-#   permission_classes = [permissions.IsAuthenticated]
-
-  def get(self, request):
-    templates = Template.objects.all()
-    serializer = TemplateSerializer(templates, many=True)
-    return Response(serializer.data)
-
-  def post(self, request):
-    serializer = TemplateSerializer(data=request.data)
-    if serializer.is_valid():
-      serializer.save()
-      return Response(serializer.data, status=HTTP_201_CREATED)
-    return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
-
-class TemplateDetail(APIView):
-#   permission_classes = [permissions.IsAuthenticated]
-
-  def get_object(self, pk):
-    try:
-      return Template.objects.get(pk=pk)
-    except Template.DoesNotExist:
-      return None
-
-  def get(self, request, pk):
-    template = self.get_object(pk)
-    if not template:
-      return Response(status=HTTP_404_NOT_FOUND)
-    serializer = TemplateSerializer(template)
-    return Response(serializer.data)
-
-  def put(self, request, pk):
-    template = self.get_object(pk)
-    if not template:
-      return Response(status=HTTP_404_NOT_FOUND)
-    serializer = TemplateSerializer(template, data=request.data)
-    if serializer.is_valid():
-      serializer.save()
-      return Response(serializer.data)
-    return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
-
-  def delete(self, request, pk):
-    template = self.get_object(pk)
-    if not template:
-      return Response(status=HTTP_404_NOT_FOUND)
-    template.delete()
-    return Response(status=HTTP_204_NO_CONTENT)
-
-class TemplateDownloadView(APIView):
-  def get(self, request, pk):
-    template = self.get_object(pk)
-    if not template:
-      return Response(status=HTTP_404_NOT_FOUND)
-    serializer = TemplateSerializer(template)
-    return Response(serializer.data)
-  
-class TemplatePreviewView(viewsets.ModelViewSet):
+class TemplateViewSet(viewsets.ModelViewSet):
     queryset = Template.objects.all()
     serializer_class = TemplateSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        # Optionally filter the queryset based on criteria
+        return self.queryset
 
 
 class ResumeViewSet(viewsets.ModelViewSet):
@@ -120,6 +65,6 @@ class ResumeViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        # Filter the queryset to only include resumes belonging to the authenticated user
+        # Filter resumes to only include those belonging to the authenticated user
         return self.queryset.filter(user=self.request.user)
 
