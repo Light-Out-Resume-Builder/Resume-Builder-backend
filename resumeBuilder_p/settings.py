@@ -34,7 +34,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 Debug = os.environ.get("DEBUG", False).lower() == "true"
 
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(",")
 
 # ALLOWED_HOSTS = ["*"]
 
@@ -121,7 +121,7 @@ DATABASES = {
 DATABASE_URL =  os.environ.get("DATABASE_URL")
 # DATABASES["default"] = dj_database_url.parse("")
 
-# DATABASES = {
+# DATABASES = {     
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
 #         'NAME': env("Database"),
