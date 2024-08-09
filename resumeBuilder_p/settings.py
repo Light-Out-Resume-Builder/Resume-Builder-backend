@@ -34,9 +34,9 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 Debug = os.environ.get("DEBUG", False).lower() == "true"
 
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
+# ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS").split(" ")
 
-# ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["*"]
 
 CORS_ALLOW_ALL_ORIGINS = True
 
@@ -44,7 +44,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:8000',
     'http://127.0.0.1',
     'http://localhost:3000',
-    'https://resumesbuilder.netlify.app/',
+    'https://resumesbuilder.netlify.app',
     'https://resume-builder-backend-wvco.onrender.com'
 ]
 
@@ -126,7 +126,7 @@ DATABASES = {
     }
 }
 
-DATABASE_URL =  os.environ.get("DATABASE_URL")
+# DATABASE_URL =  os.environ.get("DATABASE_URL")
 # DATABASES["default"] = dj_database_url.parse("")
 
 # DATABASES = {     
