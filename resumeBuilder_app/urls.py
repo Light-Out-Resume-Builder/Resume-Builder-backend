@@ -1,6 +1,6 @@
 from . import views
 from django.urls import path
-from .views import TemplateList, TemplateDetail, ResumeViewSet
+from .views import  ResumeViewSet, TemplateViewSet
 from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
@@ -8,10 +8,18 @@ from rest_framework_simplejwt.views import (
 
 
 urlpatterns = [
-    # path('templates/', TemplateList.as_view()),
-    # path('templates/<int:pk>/', TemplateDetail.as_view()),
-    # # path('templates/<int:pk>/download/', views.TemplateDownloadView.as_view()),
-    # # path('templates/<int:pk>/preview/', views.TemplatePreviewView.as_view()),
+
+    path('template/', TemplateViewSet.as_view({
+        'get': 'list',      # To Handles GET requests to list all templates
+        'post': 'create'    # To Handles POST requests to create a new template
+    }), name="template-list"),
+
+    path('template/<int:pk>/', TemplateViewSet.as_view({
+        'get': 'retrieve',  # To Handles GET requests to retrieve a single template by ID
+        'put': 'update',    # To Handles PUT requests to update a template by ID
+        'delete': 'destroy' # To Handles DELETE requests to delete a template by ID
+    }), name="template-detail"),
+    
 
     path('resume/', ResumeViewSet.as_view({
         'get': 'list',      # To Handles GET requests to list all resumes
