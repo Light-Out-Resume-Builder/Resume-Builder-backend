@@ -5,20 +5,41 @@ from .serializers import UserRegistrationSerializer, ResumeSerializer, LoginSeri
 from django.contrib.auth import authenticate
 from .models import Template, Resume
 from rest_framework import viewsets
+import logging
+logger = logging.getLogger(__name__)
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 
 
+# class RegisterView(generics.GenericAPIView):
+#     serializer_class = UserRegistrationSerializer
 
+#     def post(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         user = serializer.save()
+#         return Response({
+#             "user": UserRegistrationSerializer(user, context=self.get_serializer_context()).data,
+#             "message": "User Created Successfully. Continue to Login...",
+#         }, status=status.HTTP_201_CREATED)
+
+
+@method_decorator(csrf_exempt, name='dispatch')
 class RegisterView(generics.GenericAPIView):
     serializer_class = UserRegistrationSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        return Response({
-            "user": UserRegistrationSerializer(user, context=self.get_serializer_context()).data,
-            "message": "User Created Successfully. Continue to Login...",
-        }, status=status.HTTP_201_CREATED)
+        try:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            user = serializer.save()
+            return Response({
+                "user": UserRegistrationSerializer(user, context=self.get_serializer_context()).data,
+                "message": "User Created Successfully. Continue to Login...",
+            }, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            logger.error(f"Error in RegisterView: {str(e)}")
+            return Response({"error": "An unexpected error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class LoginView(generics.GenericAPIView):
