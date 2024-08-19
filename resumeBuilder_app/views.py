@@ -24,7 +24,7 @@ from django.utils.decorators import method_decorator
 #         }, status=status.HTTP_201_CREATED)
 
 
-@method_decorator(csrf_exempt, name='dispatch')
+# @method_decorator(csrf_exempt, name='dispatch')
 class RegisterView(generics.GenericAPIView):
     serializer_class = UserRegistrationSerializer
 
@@ -38,9 +38,10 @@ class RegisterView(generics.GenericAPIView):
                 "message": "User Created Successfully. Continue to Login...",
             }, status=status.HTTP_201_CREATED)
         except Exception as e:
-            logger.error(f"Error in RegisterView: {str(e)}")
-            return Response({"error": "An unexpected error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+            logger.error(e)
+            return Response({
+                "error": "A user with this email already exists."
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
