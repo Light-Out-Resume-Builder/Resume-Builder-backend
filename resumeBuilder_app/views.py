@@ -25,23 +25,27 @@ from django.utils.decorators import method_decorator
 
 
 # @method_decorator(csrf_exempt, name='dispatch')
+# @method_decorator(csrf_exempt, name='dispatch')
 class RegisterView(generics.GenericAPIView):
     serializer_class = UserRegistrationSerializer
 
     def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        
+        # Handling validation errors
+        if not serializer.is_valid():
+            logger.error(f"Validation Error in RegisterView: {serializer.errors}")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
         try:
-            serializer = self.get_serializer(data=request.data)
-            serializer.is_valid(raise_exception=True)
             user = serializer.save()
             return Response({
                 "user": UserRegistrationSerializer(user, context=self.get_serializer_context()).data,
                 "message": "User Created Successfully. Continue to Login...",
             }, status=status.HTTP_201_CREATED)
         except Exception as e:
-            logger.error(e)
-            return Response({
-                "error": "A user with this email already exists."
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            logger.error(f"Error in RegisterView: {str(e)}")
+            return Response({"error": "An unexpected error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
