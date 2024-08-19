@@ -149,7 +149,7 @@ DATABASES = {
 #     }
 # }
 
-# DATABASE_URL =  os.environ.get("postgresql://resumeuilder_db_user:KfpLqNNJ7qFcHe2sNvdZ9yUtTsjxLLeb@dpg-cqqilmt6l47c73avc2jg-a.oregon-postgres.render.com/resumeuilder_db")
+# DATABASE_URL =  os.environ.get(" ")
 # DATABASES["default"] = dj_database_url.parse("")
 
 # DATABASES = {     

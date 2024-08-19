@@ -7,25 +7,7 @@ from .models import Template, Resume
 from rest_framework import viewsets
 import logging
 logger = logging.getLogger(__name__)
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
 
-
-# class RegisterView(generics.GenericAPIView):
-#     serializer_class = UserRegistrationSerializer
-
-#     def post(self, request, *args, **kwargs):
-#         serializer = self.get_serializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         user = serializer.save()
-#         return Response({
-#             "user": UserRegistrationSerializer(user, context=self.get_serializer_context()).data,
-#             "message": "User Created Successfully. Continue to Login...",
-#         }, status=status.HTTP_201_CREATED)
-
-
-# @method_decorator(csrf_exempt, name='dispatch')
-# @method_decorator(csrf_exempt, name='dispatch')
 class RegisterView(generics.GenericAPIView):
     serializer_class = UserRegistrationSerializer
 
@@ -47,22 +29,41 @@ class RegisterView(generics.GenericAPIView):
             logger.error(f"Error in RegisterView: {str(e)}")
             return Response({"error": "An unexpected error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+
+
+
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginSerializer
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        email = serializer.validated_data['email']
-        password = serializer.validated_data['password']
-        user = authenticate(email=email, password=password)
-        if user is not None:
-            return Response({
-                "user": UserRegistrationSerializer(user, context=self.get_serializer_context()).data,
-                "token": user.tokens()
-            }, status=status.HTTP_200_OK)
-        else:
-            return Response({"error": "Invalid Credentials"}, status=status.HTTP_400_BAD_REQUEST)
+        user = serializer.validated_data['user']
+        tokens = serializer.get_tokens_for_user(user)
+        return Response({
+            "user": UserRegistrationSerializer(user, context=self.get_serializer_context()).data,
+            "tokens": tokens
+        }, status=status.HTTP_200_OK)
+    
+    # def post(self, request, *args, **kwargs):
+    #     serializer = self.get_serializer(data=request.data)
+    #     try:
+    #         serializer.is_valid(raise_exception=True)
+    #         email = serializer.validated_data['email']
+    #         password = serializer.validated_data['password']
+    #         user = authenticate(email=email, password=password)
+
+    #         if user is not None:
+    #             return Response({
+    #                 "user": UserRegistrationSerializer(user, context=self.get_serializer_context()).data,
+    #                 "token": user.tokens()
+    #             }, status=status.HTTP_200_OK)
+    #         else:
+    #             return Response({"error": "Invalid Credentials"}, status=status.HTTP_400_BAD_REQUEST)
+    #     except Exception as e:
+    #         logger.error(f"Error during login: {str(e)}")
+    #         return Response({"error": "An unexpected error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class LogoutView(generics.GenericAPIView):
