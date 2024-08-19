@@ -140,13 +140,16 @@ SIMPLE_JWT = {
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(default=os.environ.get("DATABASE_URL"))
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
-DATABASE_URL =  os.environ.get("DATABASE_URL")
+# DATABASE_URL =  os.environ.get("postgresql://resumeuilder_db_user:KfpLqNNJ7qFcHe2sNvdZ9yUtTsjxLLeb@dpg-cqqilmt6l47c73avc2jg-a.oregon-postgres.render.com/resumeuilder_db")
 # DATABASES["default"] = dj_database_url.parse("")
 
 # DATABASES = {     
