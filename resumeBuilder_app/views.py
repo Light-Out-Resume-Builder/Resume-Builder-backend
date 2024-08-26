@@ -22,10 +22,11 @@ class LoginView(APIView):
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data
-        tokens = user.tokens()
-        return Response(tokens, status=status.HTTP_200_OK)
+        if serializer.is_valid():
+            user = serializer.validated_data['user']
+            tokens = user.tokens()
+            return Response(tokens, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LogoutView(APIView):

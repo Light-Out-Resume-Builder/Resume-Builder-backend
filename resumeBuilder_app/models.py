@@ -7,11 +7,10 @@ from .managers import UserManager
 class User(AbstractUser):
     fullname = models.CharField(max_length=255)
     email = models.EmailField(unique=True, db_index=True)
-    password = models.CharField(max_length=255)
-    username = None
+    username = None  # Disable the username field
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = []  # No additional fields required
 
     objects = UserManager()
 
