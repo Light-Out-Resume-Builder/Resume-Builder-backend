@@ -68,13 +68,6 @@ CORS_ALLOW_HEADERS = [
 ]
 
 
-
-
-# CORS_ALLOWED_ORIGINS = [
-#     'http://127.0.0.1:8000',
-#     'http://127.0.0.1',
-#     'http://localhost:3000',
-# ]
 # Application definition
 
 INSTALLED_APPS = [
@@ -92,6 +85,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'django.contrib.auth.backends.ModelBackend',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -208,7 +202,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-
+# STATIC_URL = '/static/'
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
