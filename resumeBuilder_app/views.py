@@ -1,59 +1,43 @@
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from .serializers import UserRegistrationSerializer, ResumeSerializer, LoginSerializer, LogoutSerializer, TemplateSerializer
+from .serializers import ResumeSerializer, LoginSerializer, UserSerializer,   TemplateSerializer
 from django.contrib.auth import authenticate
 from .models import Template, Resume
 from rest_framework import viewsets
 import logging
-
 logger = logging.getLogger(__name__)
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .models import User
 
-class RegisterView(generics.GenericAPIView):
-    serializer_class = UserRegistrationSerializer
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        
-        if not serializer.is_valid():
-            logger.error(f"Validation Error in RegisterView: {serializer.errors}")
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        try:
-            user = serializer.save()
-            return Response({
-                "user": UserRegistrationSerializer(user, context=self.get_serializer_context()).data,
-                "message": "User Created Successfully. Continue to Login...",
-            }, status=status.HTTP_201_CREATED)
-        except Exception as e:
-            logger.error(f"Error in RegisterView: {str(e)}")
-            return Response({"error": "An unexpected error occurred."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+class SignupView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 
-class LoginView(generics.GenericAPIView):
+class LoginView(APIView):
     serializer_class = LoginSerializer
 
     def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        tokens = serializer.get_tokens_for_user(user)
-        return Response({
-            "user": UserRegistrationSerializer(user, context=self.get_serializer_context()).data,
-            "tokens": tokens
-        }, status=status.HTTP_200_OK)
+        user = serializer.validated_data
+        tokens = user.tokens()
+        return Response(tokens, status=status.HTTP_200_OK)
 
 
-class LogoutView(generics.GenericAPIView):
-    serializer_class = LogoutSerializer
-    permission_classes = (IsAuthenticated,)
+class LogoutView(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            refresh_token = request.data["refresh"]
+            token = RefreshToken(refresh_token)
+            token.blacklist()
 
-    def post(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response({"status": "success"}, status=status.HTTP_200_OK)
-    
+            return Response({"detail": "User logged out successfully"}, status=status.HTTP_205_RESET_CONTENT)
+        except Exception as e:
+            return Response({"detail": "Invalid token or token expired"}, status=status.HTTP_400_BAD_REQUEST)
     
 class TemplateViewSet(viewsets.ModelViewSet):
     queryset = Template.objects.all()
